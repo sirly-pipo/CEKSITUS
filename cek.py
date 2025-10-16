@@ -9,26 +9,21 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 🎨 CSS Kustom untuk Tampilan Lebih Menarik ---
+# --- 🎨 CSS untuk Tampilan Modern ---
 st.markdown("""
     <style>
         body {
             background: linear-gradient(135deg, #74ABE2, #5563DE);
-            color: #fff;
         }
         .main {
-            background-color: #f8f9fa;
+            background-color: #fdfdfd;
             padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
-        h1 {
+        h1, h2, h3 {
+            color: #2C3E50;
             text-align: center;
-            color: #2C3E50 !important;
-        }
-        p {
-            text-align: center;
-            color: #34495E !important;
         }
         .stTextInput>div>div>input {
             border-radius: 10px;
@@ -48,16 +43,18 @@ st.markdown("""
             background-color: #3b4cd7 !important;
             transform: scale(1.02);
         }
+        .result-box {
+            background-color: #f0f3ff;
+            border-left: 5px solid #5563DE;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+        footer {visibility: hidden;}
     </style>
 """, unsafe_allow_html=True)
 
-# --- 🧠 Judul & Deskripsi ---
-st.title("🔍 Cek Keamanan Situs Web")
-st.markdown("Gunakan aplikasi ini untuk memeriksa apakah suatu URL **aman** atau **berpotensi berbahaya** menggunakan **Google Safe Browsing API.**")
-
-st.markdown("---")
-
-# --- 🔑 Ambil API Key dari Secrets Streamlit Cloud ---
+# --- 🔑 Ambil API Key dari Streamlit Secrets ---
 API_KEY = st.secrets["API_KEY"]
 ENDPOINT = f"https://safebrowsing.googleapis.com/v4/threatMatches:find?key={API_KEY}"
 
@@ -82,15 +79,32 @@ def check_url(url):
         return False, result["matches"][0]["threatType"]
     return True, None
 
-# --- 🧾 Input URL ---
+# --- 🧾 Judul ---
+st.title("🔍 Cek Keamanan Situs Web")
+st.markdown("Gunakan aplikasi ini untuk memeriksa apakah suatu URL **aman** atau **berpotensi berbahaya** menggunakan **Google Safe Browsing API.**")
+st.markdown("---")
+
+# --- 💾 Simpan Riwayat di Session State ---
+if "history" not in st.session_state:
+    st.session_state.history = []
+
+# --- 🌐 Input URL ---
 st.markdown("### 🌐 Masukkan URL yang ingin diperiksa")
 url_input = st.text_input("", placeholder="contoh: https://example.com")
 
-# --- 🚦 Tombol & Hasil ---
+# --- 🚦 Tombol Cek Situs ---
 if st.button("🔎 Cek Situs"):
     if url_input.strip():
         with st.spinner("🔄 Sedang memeriksa keamanan situs..."):
             safe, threat = check_url(url_input.strip())
+
+            # Simpan ke riwayat
+            st.session_state.history.append({
+                "url": url_input.strip(),
+                "status": "Aman" if safe else "Berbahaya",
+                "threat": threat if threat else "-"
+            })
+
             st.markdown("---")
             if safe:
                 st.success("✅ **Situs ini aman dikunjungi.**")
@@ -100,8 +114,25 @@ if st.button("🔎 Cek Situs"):
     else:
         st.warning("⚠️ Masukkan URL terlebih dahulu.")
 
+# --- 🕘 Riwayat Pengecekan ---
+if st.session_state.history:
+    st.markdown("---")
+    st.subheader("📜 Riwayat Pengecekan")
+
+    for item in reversed(st.session_state.history):
+        color = "#2ecc71" if item["status"] == "Aman" else "#e74c3c"
+        st.markdown(
+            f"""
+            <div class='result-box'>
+                <b>URL:</b> <span style='color:#2C3E50'>{item['url']}</span><br>
+                <b>Status:</b> <span style='color:{color}'>{item['status']}</span><br>
+                <b>Jenis Ancaman:</b> {item['threat']}
+            </div>
+            """, unsafe_allow_html=True
+        )
+
 # --- ✨ Footer ---
 st.markdown("""
 ---
-<center>Made with ❤️ using Streamlit & Google Safe Browsing API</center>
+<center style='color:#7f8c8d;'>Made with ❤️ by Andi using Streamlit & Google Safe Browsing API</center>
 """, unsafe_allow_html=True)

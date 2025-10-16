@@ -49,6 +49,7 @@ st.markdown("""
             padding: 10px 15px;
             margin-top: 10px;
             border-radius: 8px;
+            color: #34495e;
         }
         footer {visibility: hidden;}
     </style>
@@ -136,4 +137,5 @@ st.markdown("""
 ---
 <center style='color:#7f8c8d;'>Made with ❤️ by Andi using Streamlit & Google Safe Browsing API</center>
 """, unsafe_allow_html=True)
+
 

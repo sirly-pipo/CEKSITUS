@@ -124,7 +124,7 @@ if st.session_state.history:
         st.markdown(
             f"""
             <div class='result-box'>
-                <b>URL:</b> <span style='color:#2C3E50'>{item['url']}</span><br>
+                <b>URL:</b> <span style='color:#5563DE'>{item['url']}</span><br>
                 <b>Status:</b> <span style='color:{color}'>{item['status']}</span><br>
                 <b>Jenis Ancaman:</b> {item['threat']}
             </div>
@@ -136,3 +136,4 @@ st.markdown("""
 ---
 <center style='color:#7f8c8d;'>Made with ❤️ by Andi using Streamlit & Google Safe Browsing API</center>
 """, unsafe_allow_html=True)
+

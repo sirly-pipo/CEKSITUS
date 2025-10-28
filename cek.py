@@ -312,8 +312,9 @@ st.markdown("""
 ---
 <center style='color:#7f8c8d; font-size: 14px;'>
     Pemrograman Sistem dan Jaringan - KELOMPOK 2 <br>
-    <small>© 2024 - Aplikasi Cek Keamanan Situs</small>
+    <small>© 2025 - Aplikasi Cek Keamanan Situs</small>
 </center>
 """, unsafe_allow_html=True)
+
 
 
